@@ -1,0 +1,95 @@
+module(
+    name = "tflm",
+    version = "0.0.1",
+    repo_name = "tflite_micro",
+)
+
+bazel_dep(name = "bazel_skylib", version = "1.9.2")
+bazel_dep(name = "platforms", version = "1.1.0")
+bazel_dep(name = "pybind11_bazel", version = "3.0.0")
+bazel_dep(name = "rules_cc", version = "0.2.26")
+bazel_dep(name = "rules_python", version = "1.9.2")
+bazel_dep(name = "rules_shell", version = "0.8.0")
+
+# TFLM Dependencies
+
+http_archive = use_repo_rule("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+
+# Use http_archive instead of BCR bazel_dep because the BCR flatbuffers module
+# pulls in heavy, unused transitive dependencies (grpc, rules_go, rules_nodejs,
+# rules_swift, aspect_rules_js, etc.).
+http_archive(
+    name = "flatbuffers",
+    sha256 = "9102253214dea6ae10c2ac966ea1ed2155d22202390b532d1dea64935c518ada",
+    strip_prefix = "flatbuffers-25.9.23",
+    urls = ["https://github.com/google/flatbuffers/archive/refs/tags/v25.9.23.tar.gz"],
+)
+
+http_archive(
+    name = "kissfft",
+    build_file = "//third_party/kissfft:BUILD.bazel",
+    patch_args = ["-p1"],
+    patches = ["//third_party/kissfft:kissfft.patch"],
+    sha256 = "ac2259f84e372a582270ed7c7b709d02e6ca9c7206e40bb58de6ef77f6474872",
+    strip_prefix = "kissfft-130",
+    urls = ["https://github.com/mborgerding/kissfft/archive/refs/tags/v130.zip"],
+)
+
+# Python
+
+python = use_extension("@rules_python//python/extensions:python.bzl", "python")
+
+pip = use_extension("@rules_python//python/extensions:pip.bzl", "pip")
+
+PYTHON_VERSIONS = [
+    "3.10",
+    "3.11",
+    "3.12",
+    "3.13",
+    "3.14",
+]
+
+pip.whl_mods(
+    additive_build_content = """\
+load("@@//python:numpy_cc_targets.bzl", "extra_numpy_targets")
+extra_numpy_targets()
+""",
+    hub_name = "tflm_pip_deps_whl_mods",
+    whl_name = "numpy",
+)
+
+[
+    (
+        python.toolchain(
+            is_default = (version == "3.13"),
+            python_version = version,
+        ),
+        pip.parse(
+            extra_hub_aliases = {
+                "numpy": ["cc_headers"],
+            },
+            hub_name = "tflm_pip_deps",
+            python_version = version,
+            requirements_lock = "//python:python_requirements_%s.txt" % version.replace(".", "_"),
+            whl_modifications = {
+                "@tflm_pip_deps_whl_mods//:numpy.json": "numpy",
+            },
+        ),
+    )
+    for version in PYTHON_VERSIONS
+]
+
+use_repo(
+    python,
+    python_3_10 = "python_3_10_x86_64-unknown-linux-gnu",
+    python_3_11 = "python_3_11_x86_64-unknown-linux-gnu",
+    python_3_12 = "python_3_12_x86_64-unknown-linux-gnu",
+    python_3_13 = "python_3_13_x86_64-unknown-linux-gnu",
+    python_3_14 = "python_3_14_x86_64-unknown-linux-gnu",
+)
+
+use_repo(
+    pip,
+    "tflm_pip_deps",
+    "tflm_pip_deps_whl_mods",
+)

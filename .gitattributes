@@ -1,0 +1,19 @@
+* text=auto eol=lf
+
+*.uvprojx text eol=crlf
+*.uvoptx text eol=crlf
+*.s text eol=crlf
+*.c text eol=lf
+*.h text eol=lf
+*.cc text eol=lf
+*.cpp text eol=lf
+*.py text eol=lf
+*.md text eol=lf
+
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.pdf binary
+*.tflite binary
+*.keras binary
+*.npz binary
