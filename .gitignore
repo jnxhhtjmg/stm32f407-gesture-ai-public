@@ -35,3 +35,4 @@ training/model/*
 Thumbs.db
 .vscode/
 .idea/
+training/data/gui_capture/

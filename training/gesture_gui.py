@@ -37,6 +37,9 @@ ACCENT_DARK = "#2c9f95"
 WARN = "#f6ad55"
 DANGER = "#fc8181"
 
+SCRIPT_DIR = Path(__file__).resolve().parent
+DEFAULT_CAPTURE_DIR = SCRIPT_DIR / "data" / "gui_capture"
+
 GESTURE_TEXT = {
     "lift": "LIFT",
     "move_left": "MOVE LEFT",
@@ -138,7 +141,7 @@ class GestureApp:
         self.port_var = tk.StringVar()
         self.baud_var = tk.StringVar(value=str(BAUD))
         self.label_var = tk.StringVar(value="lift")
-        self.dir_var = tk.StringVar(value=str(Path("data") / "gui_capture"))
+        self.dir_var = tk.StringVar(value=str(DEFAULT_CAPTURE_DIR))
         self.status_var = tk.StringVar(value="OFFLINE")
         self.gesture_var = tk.StringVar(value="--")
         self.conf_var = tk.StringVar(value="confidence --%")
@@ -446,7 +449,7 @@ class GestureApp:
             self.close_capture()
         label = self.label_var.get().strip() or "unlabeled"
         safe = re.sub(r"[^A-Za-z0-9_.-]+", "_", label)
-        out_dir = Path(self.dir_var.get().strip() or "data/gui_capture")
+        out_dir = Path(self.dir_var.get().strip() or DEFAULT_CAPTURE_DIR)
         try:
             out_dir.mkdir(parents=True, exist_ok=True)
         except OSError as exc:
