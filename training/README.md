@@ -24,6 +24,22 @@ first 0.3 s (button transient), rejects captures without motion, and limits a
 capture to 6 s.  A separate F103 collector is not included; any 100 Hz CSV in
 the format above works.
 
+## Host GUI
+
+`gesture_gui.py` is a small Tkinter monitor for the board:
+
+```bash
+python gesture_gui.py --port COM6
+# or, without hardware:
+python gesture_gui.py --demo
+```
+
+It parses `gesture`, `imu` and `infer_us` lines, shows the current class and
+confidence, sends the `AA 55 87 ...` capture start/stop commands, and writes
+one CSV per capture (`timestamp,ax,ay,az,gx,gy,gz,label`).
+
+![Host GUI](assets/gui_demo.png)
+
 ## Pipeline
 
 ```text
@@ -98,6 +114,7 @@ Copy `normalization_mean`, `normalization_std`, `INPUT_SCALE` and
 ## Reference
 
 On the author's private dataset (188 F103 + 55 F407 captures), this pipeline
-reached INT8 97.4% on a 39-capture held-out split (F407 subset 11/11).  The
-data and trained artifacts are not included; your numbers will depend on your
-captures, mounting and class definitions.
+reached INT8 97.4% on a 39-capture held-out split (F407 subset 11/11) and
+99.1% ±1.7% in a capture-grouped 5-fold CV.  The data and trained artifacts are
+not included; your numbers will depend on your captures, mounting and class
+definitions.

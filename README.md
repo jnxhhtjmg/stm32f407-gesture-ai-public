@@ -19,6 +19,17 @@ MPU6050 (100 Hz) -> 2 s onset-aligned sequence -> 2:1 decimation (50 Hz)
 | [`firmware/`](firmware/) | STM32F407VET6 Keil project, FreeRTOS, LiteRT Micro, event segmentation, UART DMA, OLED. `g_gesture_model_data.c` is a placeholder. |
 | [`training/`](training/) | Dataset builder, grouped evaluation, augmentation, INT8 export, C-array generator, F407 capture tool. |
 
+## Host GUI
+
+A small Tkinter monitor is included for demos and capture:
+
+```bash
+python training/gesture_gui.py --port COM6
+python training/gesture_gui.py --demo    # no hardware
+```
+
+![Host GUI](training/assets/gui_demo.png)
+
 ## Quick start
 
 1. **Collect data** into `training/data/raw/` (or `data/raw_f407/`).  Each file
@@ -58,8 +69,9 @@ Until steps 3–4 are done, the firmware still boots but logs
 
 The author's private dataset used 188 F103 captures plus 55 F407 captures.
 With that data, the same pipeline reached INT8 97.4% on a 39-capture held-out
-split (F407 subset 11/11), ~110 ms per inference on the F407, a 20.1 KB INT8
-model and 6.2 KB tensor arena.  **Those artifacts and numbers are not included
+split (F407 subset 11/11), a capture-grouped 5-fold CV of 99.1% ±1.7%,
+~110 ms per inference on the F407, a 20.1 KB INT8 model and 6.2 KB tensor
+arena.  **Those artifacts and numbers are not included
 here**; they depend entirely on your data and mounting.
 
 ## Hardware
