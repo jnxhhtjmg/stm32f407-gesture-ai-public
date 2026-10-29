@@ -31,9 +31,9 @@ the `f407_gesture_ai` target.  Command line:
 UV4.exe -b MDK-ARM\f407_gesture_ai.uvprojx -j0 -o build.log
 ```
 
-Reference build with a 20 KB INT8 model: Code ~158 KB + RO ~32 KB, ZI ~48 KB
-(RW 24 B).  The 64 KB CCM is not used.  With the placeholder model the sizes
-are slightly smaller.
+Reference build with a 15.3 KB INT8 model: Code 157,932 B + RO 27,148 B,
+ZI 48,416 B (RW 24 B).  The 64 KB CCM is not used.  With the placeholder model
+the sizes are slightly smaller.
 
 USART1 TX uses **DMA2 Stream 7 Channel 4** and a 4 KB ring buffer; USART1 RX
 uses a byte interrupt with the streaming CRC16 parser.  `APP_UART_TX_DMA 1`
@@ -95,7 +95,7 @@ gesture inference ready
 oled ready
 sampling,100
 imu,<ax>,<ay>,<az>,<gx>,<gy>,<gz>   # every 100 ms while idle
-infer_us,<us>                       # ~110 ms on the F407
+infer_us,<us>                       # ~70 ms on the F407
 gesture,<label>,<confidence>        # one line per gesture
 gesture,neutral,100                 # release
 capture,start / capture,stop        # button or protocol

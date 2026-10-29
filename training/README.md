@@ -38,7 +38,7 @@ It parses `gesture`, `imu` and `infer_us` lines, shows the current class and
 confidence, sends the `AA 55 87 ...` capture start/stop commands, and writes
 one CSV per capture (`timestamp,ax,ay,az,gx,gy,gz,label`).
 
-![Host GUI](assets/gui_demo.png)
+![Host GUI](assets/gui_real.png)
 
 ## Pipeline
 
@@ -113,8 +113,8 @@ Copy `normalization_mean`, `normalization_std`, `INPUT_SCALE` and
 
 ## Reference
 
-On the author's private dataset (188 F103 + 55 F407 captures), this pipeline
-reached INT8 97.4% on a 39-capture held-out split (F407 subset 11/11) and
-99.1% ±1.7% in a capture-grouped 5-fold CV.  The data and trained artifacts are
-not included; your numbers will depend on your captures, mounting and class
+On the author's private dataset (188 F103 + 55 F407 captures), the width-12
+INT8 model reached 100% on a 39-capture held-out split (F407 subset 11/11) and
+100% in a capture-grouped 5-fold CV.  The data and trained artifacts are not
+included; your numbers will depend on your captures, mounting and class
 definitions.
